@@ -1,0 +1,4 @@
+interface:
+  display_name: "Garmin Health"
+  short_description: "Review Garmin trends with dates and data coverage"
+  default_prompt: "Use $garmin-health to review my last seven complete days against my prior 28-day baseline, with dates, units and missing data."

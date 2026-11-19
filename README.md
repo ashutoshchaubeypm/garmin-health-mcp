@@ -121,6 +121,36 @@ tunnel-client runtimes stop garmin-health
 
 To rotate the Garmin key, rerun `python configure.py`. To rotate the OpenAI key, stop the tunnel, remove only `openai-tunnel-key` from the data directory below, and rerun the tunnel command to enter its replacement. Revoke old keys in their respective portals. Disconnect the plugin in ChatGPT to stop new plugin access.
 
+## Optional Garmin Health skill
+
+[The Garmin Health skill](skills/garmin-health/SKILL.md) teaches the assistant how to select daily metrics, compare seven days against a separate 28-day baseline, and report units, dates and missing data. **Install the MCP connection above first.** A skill supplies instructions; it does not store keys, grant Garmin access or make local tools available in a web client.
+
+### Codex / ChatGPT desktop
+
+Ask the built-in skill installer to install `skills/garmin-health` from this GitHub repository. Alternatively, copy that folder into your project's `.agents/skills/` directory. Select `garmin-health` in the skill picker; use `$garmin-health` in Codex or `@` to select it in ChatGPT desktop. Restart if it does not appear. Make sure the same client also has the Garmin MCP tools connected. See [OpenAI's skill guide](https://learn.chatgpt.com/docs/build-skills).
+
+Standalone skill folders are for supported desktop/Codex environments. This repository is not a published ChatGPT plugin-directory package, and uploading the ZIP into an ordinary chat does not install a skill.
+
+### Claude
+
+Create the upload archive from the cloned repository:
+
+```sh
+cd skills
+python -m zipfile -c ../garmin-health-skill.zip garmin-health
+cd ..
+```
+
+The ZIP root contains `garmin-health/SKILL.md` and `garmin-health/agents/openai.yaml`. In Claude, enable code execution/file creation, then go to **Customize → Skills → + → Create skill → Upload a skill**, upload the ZIP, and enable it. Labels and organization permissions may vary; see [Claude's installation guide](https://support.claude.com/en/articles/12512180-use-skills-in-claude).
+
+Use the skill in Claude Desktop with the local MCP configured above. Uploading it to claude.ai does not expose the Desktop server to the web. The optional `agents/openai.yaml` supplies Codex display metadata; the workflow itself is in `SKILL.md`.
+
+### Try it
+
+> Use Garmin Health to compare my last seven complete days of sleep, overnight HRV and resting heart rate with the preceding 28 days. Show dates, units and missing days.
+
+The assistant should retrieve actual tool responses, name the source fields, and avoid a comparison when coverage is insufficient. If the MCP tools are unavailable, it should explain the missing connection. Skill packaging is validated locally; selection and execution in every supported client have not been independently tested.
+
 ## Privacy and storage
 
 Each installation reads only the configured user's Garmin account. There is no author-operated backend, telemetry, shared credential, health database or background data export. Tools fetch data on demand. The server sends requested Garmin responses (which can contain identifiers and detailed measurements) to the selected MCP client. ChatGPT/Claude can retain those responses according to their own privacy, history and training settings; local storage does not mean AI analysis stays on-device.
